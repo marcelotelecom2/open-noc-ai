@@ -1,0 +1,31 @@
+# Python
+.venv/
+**/.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Local DB
+*.db
+*.sqlite3
+
+# Node / Next
+node_modules/
+.next/
+dist/
+build/
+
+# System
+.DS_Store
+Thumbs.db
