@@ -5,24 +5,25 @@ from uuid import uuid4
 from app.api.deps import get_db_session
 from app.models.user import User
 from app.models.tenant import Tenant
+from app.schemas.user import UserResponse
 
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", response_model=list[UserResponse])
 def list_users(db: Session = Depends(get_db_session)):
     return db.query(User).all()
 
 
-@router.post("/")
+@router.post("/", response_model=UserResponse)
 def create_user(db: Session = Depends(get_db_session)):
     tenant = db.query(Tenant).first()
 
     user = User(
         id=uuid4(),
         tenant_id=tenant.id,
-        email="user@test.com",
-        full_name="Test User",
+        email="user2@test.com",
+        full_name="Test User 2",
         hashed_password="fakehashed",
         is_active=True,
     )
