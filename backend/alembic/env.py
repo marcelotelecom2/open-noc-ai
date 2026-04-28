@@ -19,6 +19,8 @@ from app.models.user import User  # noqa: F401
 from app.models.customer import Customer  # noqa: F401
 from app.models.site import Site  # noqa: F401
 from app.models.carrier import Carrier  # noqa: F401
+from app.models.link import Link  # noqa: F401
+
 
 config = context.config
 
