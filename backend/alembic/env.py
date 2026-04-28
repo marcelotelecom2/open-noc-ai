@@ -16,6 +16,9 @@ from app.db.base import Base
 from app.db.session import DATABASE_URL
 from app.models.tenant import Tenant  # noqa: F401
 from app.models.user import User  # noqa: F401
+from app.models.customer import Customer  # noqa: F401
+from app.models.site import Site  # noqa: F401
+from app.models.carrier import Carrier  # noqa: F401
 
 config = context.config
 
@@ -64,3 +67,4 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+
