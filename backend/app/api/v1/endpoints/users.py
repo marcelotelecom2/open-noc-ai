@@ -5,7 +5,7 @@ from uuid import uuid4
 from app.api.deps import get_db_session
 from app.models.user import User
 from app.schemas.user import UserResponse, UserCreate
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password
 
 router = APIRouter()
 
@@ -30,3 +30,19 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db_session)):
     db.commit()
     db.refresh(user)
     return user
+
+
+@router.post("/verify")
+def verify_user_password(
+    email: str,
+    password: str,
+    db: Session = Depends(get_db_session),
+):
+    user = db.query(User).filter(User.email == email).first()
+
+    if not user:
+        return {"error": "User not found"}
+
+    valid = verify_password(password, user.hashed_password)
+
+    return {"valid": valid}
