@@ -4,8 +4,7 @@ from uuid import uuid4
 
 from app.api.deps import get_db_session
 from app.models.user import User
-from app.models.tenant import Tenant
-from app.schemas.user import UserResponse
+from app.schemas.user import UserResponse, UserCreate
 
 router = APIRouter()
 
@@ -16,16 +15,14 @@ def list_users(db: Session = Depends(get_db_session)):
 
 
 @router.post("/", response_model=UserResponse)
-def create_user(db: Session = Depends(get_db_session)):
-    tenant = db.query(Tenant).first()
-
+def create_user(payload: UserCreate, db: Session = Depends(get_db_session)):
     user = User(
         id=uuid4(),
-        tenant_id=tenant.id,
-        email="user2@test.com",
-        full_name="Test User 2",
+        tenant_id=payload.tenant_id,
+        email=payload.email,
+        full_name=payload.full_name,
         hashed_password="fakehashed",
-        is_active=True,
+        is_active=payload.is_active,
     )
 
     db.add(user)
