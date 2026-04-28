@@ -5,6 +5,7 @@ from uuid import uuid4
 from app.api.deps import get_db_session
 from app.models.user import User
 from app.schemas.user import UserResponse, UserCreate
+from app.core.security import get_password_hash
 
 router = APIRouter()
 
@@ -21,7 +22,7 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db_session)):
         tenant_id=payload.tenant_id,
         email=payload.email,
         full_name=payload.full_name,
-        hashed_password="fakehashed",
+        hashed_password=get_password_hash(payload.password),
         is_active=payload.is_active,
     )
 
