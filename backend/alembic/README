@@ -1,0 +1,2 @@
+Configuração do Alembic para migrations do backend.
+As revisões devem ser geradas em alembic/versions.
