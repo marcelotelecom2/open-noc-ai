@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from app.api.deps import get_db_session
 from app.models.tenant import Tenant
-from app.schemas.tenant import TenantResponse
+from app.schemas.tenant import TenantResponse, TenantCreate
 
 router = APIRouter()
 
@@ -15,14 +15,14 @@ def list_tenants(db: Session = Depends(get_db_session)):
 
 
 @router.post("/", response_model=TenantResponse)
-def create_tenant(db: Session = Depends(get_db_session)):
+def create_tenant(payload: TenantCreate, db: Session = Depends(get_db_session)):
     tenant = Tenant(
         id=uuid4(),
-        name="Test Tenant",
-        slug="test-tenant-2",
-        status="active",
-        plan="basic",
-        is_active=True,
+        name=payload.name,
+        slug=payload.slug,
+        status=payload.status,
+        plan=payload.plan,
+        is_active=payload.is_active,
     )
     db.add(tenant)
     db.commit()
