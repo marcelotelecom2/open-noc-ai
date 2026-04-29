@@ -28,4 +28,5 @@ build/
 
 # System
 .DS_Store
-Thumbs.db.codex
+Thumbs.db
+.codex
