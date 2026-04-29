@@ -13,6 +13,10 @@ class CustomerBase(BaseModel):
 class CustomerCreate(CustomerBase):
     tenant_id: UUID
 
+class CustomerUpdate(BaseModel):
+    name: str | None = None
+    document: str | None = None
+    is_active: bool | None = None
 
 class CustomerOut(CustomerBase):
     id: UUID

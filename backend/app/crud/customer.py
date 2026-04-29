@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from uuid import UUID
 
 from app.models.customer import Customer
-from app.schemas.customer import CustomerCreate
+from app.schemas.customer import CustomerCreate, CustomerUpdate
 
 
 def create_customer(db: Session, customer_in: CustomerCreate) -> Customer:
@@ -24,3 +24,17 @@ def get_customer(db: Session, customer_id: UUID) -> Customer | None:
 
 def get_customers(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Customer).offset(skip).limit(limit).all()
+
+
+def update_customer(
+    db: Session, customer: Customer, customer_in: CustomerUpdate
+) -> Customer:
+    update_data = customer_in.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(customer, field, value)
+
+    db.add(customer)
+    db.commit()
+    db.refresh(customer)
+    return customer
