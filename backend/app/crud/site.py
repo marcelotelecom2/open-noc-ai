@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 from app.models.site import Site
-from app.schemas.site import SiteCreate
+from app.schemas.site import SiteCreate, SiteUpdate
 
 
 def create_site(db: Session, site_in: SiteCreate) -> Site:
@@ -27,3 +27,24 @@ def get_site(db: Session, site_id: UUID) -> Site | None:
 
 def get_sites(db: Session, skip: int = 0, limit: int = 100):
     return db.query(Site).offset(skip).limit(limit).all()
+
+
+def update_site(db: Session, site: Site, site_in: SiteUpdate) -> Site:
+    update_data = site_in.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(site, field, value)
+
+    db.add(site)
+    db.commit()
+    db.refresh(site)
+    return site
+
+
+def delete_site(db: Session, site: Site) -> Site:
+    site.is_active = False
+
+    db.add(site)
+    db.commit()
+    db.refresh(site)
+    return site
