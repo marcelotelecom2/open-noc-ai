@@ -39,3 +39,15 @@ def update(
         raise HTTPException(status_code=404, detail="Customer not found")
 
     return update_customer(db=db, customer=customer, customer_in=customer_in)
+
+@router.delete("/{customer_id}", response_model=CustomerOut)
+def deactivate(customer_id: UUID, db: Session = Depends(get_db)):
+    customer = get_customer(db=db, customer_id=customer_id)
+    if not customer:
+        raise HTTPException(status_code=404, detail="Customer not found")
+
+    customer.is_active = False
+    db.add(customer)
+    db.commit()
+    db.refresh(customer)
+    return customer
