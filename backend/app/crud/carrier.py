@@ -8,8 +8,10 @@ from app.schemas.carrier import CarrierCreate, CarrierUpdate
 
 def create_carrier(db: Session, carrier_in: CarrierCreate) -> Carrier:
     carrier = Carrier(
+        tenant_id=carrier_in.tenant_id,
         name=carrier_in.name,
         type=carrier_in.type,
+        is_active=carrier_in.is_active,
     )
     db.add(carrier)
     db.commit()
@@ -40,6 +42,9 @@ def update_carrier(
 
 
 def delete_carrier(db: Session, carrier: Carrier) -> Carrier:
-    db.delete(carrier)
+    carrier.is_active = False
+
+    db.add(carrier)
     db.commit()
+    db.refresh(carrier)
     return carrier

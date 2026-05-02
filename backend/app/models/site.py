@@ -9,7 +9,7 @@ from app.db.base import Base
 
 
 class Site(Base):
-    """Representa uma unidade/local físico de um customer."""
+    """Representa uma unidade/local físico de um customer dentro de um tenant."""
 
     __tablename__ = "sites"
 
@@ -17,6 +17,13 @@ class Site(Base):
         PGUUID(as_uuid=True),
         primary_key=True,
         default=uuid4,
+    )
+
+    tenant_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("tenants.id"),
+        nullable=False,
+        index=True,
     )
 
     customer_id: Mapped[UUID] = mapped_column(

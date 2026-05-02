@@ -8,16 +8,25 @@ from app.db.base import Base
 
 
 class Device(Base):
-    """Representa um equipamento de rede dentro de um site."""
+    """Representa um equipamento de rede dentro de um site e tenant."""
 
     __tablename__ = "devices"
 
+    # Identificação
     id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True),
         primary_key=True,
         default=uuid4,
     )
 
+    tenant_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("tenants.id"),
+        nullable=False,
+        index=True,
+    )
+
+    # Relacionamento
     site_id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True),
         ForeignKey("sites.id"),
@@ -25,6 +34,7 @@ class Device(Base):
         index=True,
     )
 
+    # Dados do dispositivo
     name: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
@@ -51,6 +61,7 @@ class Device(Base):
         nullable=False,
     )
 
+    # Controle
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         nullable=False,

@@ -8,16 +8,25 @@ from app.db.base import Base
 
 
 class Link(Base):
-    """Representa um link de conectividade de um site."""
+    """Representa um link de conectividade de um site dentro de um tenant."""
 
     __tablename__ = "links"
 
+    # Identificação
     id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True),
         primary_key=True,
         default=uuid4,
     )
 
+    tenant_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("tenants.id"),
+        nullable=False,
+        index=True,
+    )
+
+    # Relacionamentos
     site_id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True),
         ForeignKey("sites.id"),
@@ -32,6 +41,7 @@ class Link(Base):
         index=True,
     )
 
+    # Dados do link
     type: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
@@ -48,6 +58,7 @@ class Link(Base):
         default="up",
     )
 
+    # Controle
     is_active: Mapped[bool] = mapped_column(
         Boolean,
         nullable=False,

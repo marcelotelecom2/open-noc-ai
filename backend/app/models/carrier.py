@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 
-from sqlalchemy import String
+from sqlalchemy import Boolean, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -8,16 +8,25 @@ from app.db.base import Base
 
 
 class Carrier(Base):
-    """Representa o provedor de um link (ISP, MPLS, LTE, etc)."""
+    """Representa uma operadora/provedora disponível para links de um tenant."""
 
     __tablename__ = "carriers"
 
+    # Identificação
     id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True),
         primary_key=True,
         default=uuid4,
     )
 
+    tenant_id: Mapped[UUID] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("tenants.id"),
+        nullable=False,
+        index=True,
+    )
+
+    # Dados principais
     name: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
@@ -27,4 +36,11 @@ class Carrier(Base):
     type: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
+    )
+
+    # Controle operacional
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=True,
     )
