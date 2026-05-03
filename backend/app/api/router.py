@@ -1,6 +1,14 @@
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import tenants, users, customers, sites, carriers, links
+from app.api.v1.endpoints import (
+    tenants,
+    users,
+    customers,
+    sites,
+    carriers,
+    links,
+    devices,
+)
 
 
 api_router = APIRouter()
@@ -11,3 +19,4 @@ api_router.include_router(customers.router, prefix="/customers", tags=["customer
 api_router.include_router(sites.router, prefix="/sites", tags=["sites"])
 api_router.include_router(carriers.router, prefix="/carriers", tags=["carriers"])
 api_router.include_router(links.router, prefix="/links", tags=["links"])
+api_router.include_router(devices.router, prefix="/devices", tags=["devices"])
