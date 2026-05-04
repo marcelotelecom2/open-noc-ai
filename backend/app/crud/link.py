@@ -14,19 +14,25 @@ def _validate_link_tenant(
     site_id: UUID,
     carrier_id: UUID,
 ) -> None:
-    site = db.query(Site).filter(Site.id == site_id).first()
+    site = (
+        db.query(Site)
+        .filter(Site.id == site_id)
+        .filter(Site.tenant_id == tenant_id)
+        .filter(Site.is_active.is_(True))
+        .first()
+    )
     if not site:
         raise ValueError("Site not found")
 
-    carrier = db.query(Carrier).filter(Carrier.id == carrier_id).first()
+    carrier = (
+        db.query(Carrier)
+        .filter(Carrier.id == carrier_id)
+        .filter(Carrier.tenant_id == tenant_id)
+        .filter(Carrier.is_active.is_(True))
+        .first()
+    )
     if not carrier:
         raise ValueError("Carrier not found")
-
-    if site.tenant_id != tenant_id:
-        raise ValueError("Link tenant_id must match Site tenant_id")
-
-    if carrier.tenant_id != tenant_id:
-        raise ValueError("Link tenant_id must match Carrier tenant_id")
 
 
 def create_link(db: Session, link_in: LinkCreate) -> Link:
@@ -44,7 +50,7 @@ def create_link(db: Session, link_in: LinkCreate) -> Link:
         type=link_in.type,
         bandwidth=link_in.bandwidth,
         status=link_in.status,
-        is_active=link_in.is_active,
+        is_active=True,
     )
     db.add(link)
     db.commit()
@@ -52,23 +58,41 @@ def create_link(db: Session, link_in: LinkCreate) -> Link:
     return link
 
 
-def get_link(db: Session, link_id: UUID) -> Link | None:
-    return db.query(Link).filter(Link.id == link_id).first()
+def get_link(
+    db: Session,
+    link_id: UUID,
+    tenant_id: UUID | None = None,
+) -> Link | None:
+    query = (
+        db.query(Link)
+        .filter(Link.id == link_id)
+        .filter(Link.is_active.is_(True))
+    )
+    if tenant_id is not None:
+        query = query.filter(Link.tenant_id == tenant_id)
+    return query.first()
 
 
-def get_links(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(Link).offset(skip).limit(limit).all()
+def get_links(db: Session, tenant_id: UUID, skip: int = 0, limit: int = 100):
+    return (
+        db.query(Link)
+        .filter(Link.tenant_id == tenant_id)
+        .filter(Link.is_active.is_(True))
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
 
 
 def update_link(db: Session, link: Link, link_in: LinkUpdate) -> Link:
     update_data = link_in.model_dump(exclude_unset=True)
+    update_data.pop("tenant_id", None)
 
-    tenant_id = update_data.get("tenant_id", link.tenant_id)
     site_id = update_data.get("site_id", link.site_id)
     carrier_id = update_data.get("carrier_id", link.carrier_id)
     _validate_link_tenant(
         db=db,
-        tenant_id=tenant_id,
+        tenant_id=link.tenant_id,
         site_id=site_id,
         carrier_id=carrier_id,
     )
@@ -82,7 +106,15 @@ def update_link(db: Session, link: Link, link_in: LinkUpdate) -> Link:
     return link
 
 
-def delete_link(db: Session, link: Link) -> Link:
+def delete_link(
+    db: Session,
+    link_id: UUID,
+    tenant_id: UUID,
+) -> Link | None:
+    link = get_link(db=db, link_id=link_id, tenant_id=tenant_id)
+    if not link:
+        return None
+
     link.is_active = False
 
     db.add(link)

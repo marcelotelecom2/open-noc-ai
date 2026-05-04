@@ -12,17 +12,25 @@ router = APIRouter()
 
 @router.post("/", response_model=SiteOut)
 def create(site_in: SiteCreate, db: Session = Depends(get_db)):
-    return create_site(db=db, site_in=site_in)
+    try:
+        return create_site(db=db, site_in=site_in)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.get("/", response_model=list[SiteOut])
-def read_all(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return get_sites(db=db, skip=skip, limit=limit)
+def read_all(
+    tenant_id: UUID,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+):
+    return get_sites(db=db, tenant_id=tenant_id, skip=skip, limit=limit)
 
 
 @router.get("/{site_id}", response_model=SiteOut)
-def read(site_id: UUID, db: Session = Depends(get_db)):
-    site = get_site(db=db, site_id=site_id)
+def read(site_id: UUID, tenant_id: UUID, db: Session = Depends(get_db)):
+    site = get_site(db=db, site_id=site_id, tenant_id=tenant_id)
     if not site:
         raise HTTPException(status_code=404, detail="Site not found")
     return site
@@ -31,20 +39,24 @@ def read(site_id: UUID, db: Session = Depends(get_db)):
 @router.put("/{site_id}", response_model=SiteOut)
 def update(
     site_id: UUID,
+    tenant_id: UUID,
     site_in: SiteUpdate,
     db: Session = Depends(get_db),
 ):
-    site = get_site(db=db, site_id=site_id)
+    site = get_site(db=db, site_id=site_id, tenant_id=tenant_id)
     if not site:
         raise HTTPException(status_code=404, detail="Site not found")
 
-    return update_site(db=db, site=site, site_in=site_in)
+    try:
+        return update_site(db=db, site=site, site_in=site_in)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.delete("/{site_id}", response_model=SiteOut)
-def deactivate(site_id: UUID, db: Session = Depends(get_db)):
-    site = get_site(db=db, site_id=site_id)
+def deactivate(site_id: UUID, tenant_id: UUID, db: Session = Depends(get_db)):
+    site = delete_site(db=db, site_id=site_id, tenant_id=tenant_id)
     if not site:
         raise HTTPException(status_code=404, detail="Site not found")
 
-    return delete_site(db=db, site=site)
+    return site

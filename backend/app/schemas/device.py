@@ -9,7 +9,6 @@ class DeviceBase(BaseModel):
     vendor: str = Field(..., max_length=100)
     model: str = Field(..., max_length=100)
     role: str = Field(..., max_length=50)
-    is_active: bool = True
 
 
 class DeviceCreate(DeviceBase):
@@ -23,13 +22,13 @@ class DeviceUpdate(BaseModel):
     vendor: str | None = Field(default=None, max_length=100)
     model: str | None = Field(default=None, max_length=100)
     role: str | None = Field(default=None, max_length=50)
-    is_active: bool | None = None
 
 
 class DeviceOut(DeviceBase):
     id: UUID
     tenant_id: UUID
     site_id: UUID
+    is_active: bool
 
     class Config:
         from_attributes = True
