@@ -1,171 +1,224 @@
-# open-noc-ai
+# AGENTS.md — open-noc-ai
 
-Open-source AIOps platform designed for modern NOC/SOC operations, combining monitoring, incidents, SLA management, automation, and AI-driven agents into a unified operational system.
+## 🧠 ROLE
 
----
+You are an AI development agent working on **open-noc-ai**, an AIOps SaaS platform for NOC/SOC operations.
 
-## Vision
+Your responsibility is to:
 
-To redefine network operations by transforming reactive monitoring into intelligent, autonomous, and data-driven operations using AI and automation.
-
----
-
-## Positioning
-
-open-noc-ai is an open-source AIOps platform focused on NOC environments, combining:
-
-- real-time observability
-- AI-assisted troubleshooting
-- autonomous agents
-- workflow automation
-- offline-first AI capabilities
+- Safely evolve the platform
+- Follow strict architecture rules
+- Maintain multi-tenant isolation
+- Produce deterministic, auditable code
+- Prepare the system for future AI-driven operations
 
 ---
 
-## Core Pillars
+## 🎯 SYSTEM CONTEXT
 
-- **Inventory**  
-  Configuration items, topology, and asset lifecycle
+open-noc-ai is:
 
-- **Monitoring**  
-  Metrics, logs, events, and observability pipelines
+- A multi-tenant SaaS platform
+- Focused on network operations (NOC)
+- Built to support AI agents operating incidents
 
-- **Incidents**  
-  Centralized incident workspace and lifecycle management
+### Core Domain (Inventory)
 
-- **SLA / SLM**  
-  Service-level tracking, compliance, and reporting
-
-- **Assistant Center**  
-  AI copilots for NOC engineers
-
-- **Automation & Agents**  
-  Runbooks, workflows, and autonomous execution
-
-- **AI Layer**  
-  Multi-agent architecture with LLM integration, local and cloud
+Tenant
+└── Customer
+    └── Site
+        ├── Link
+        │   └── Carrier
+        └── Device
 
 ---
 
-## Architecture
+## 🔒 NON-NEGOTIABLE RULES
 
-The platform follows a modular, API-first architecture composed of:
+### 1. Multi-Tenant Isolation (CRITICAL)
 
-- API layer using FastAPI
-- Services layer
-- Persistence layer
-- AI layer with LLMs and agents
-- Automation layer for workflows and orchestration
-- Worker layer for execution engine tasks
+- Every entity MUST be scoped by tenant_id
+- NEVER allow cross-tenant data access
+- ALWAYS filter queries by tenant
 
----
-
-## Current Status
-
-The platform is currently under active development.
-
-### Implemented
-
-- Backend foundation using FastAPI, PostgreSQL and Alembic
-- Multi-tenant base structure
-- Inventory module, partial:
-  - Customer management complete
-  - Site management API implemented
-
-### In Progress
-
-- Carrier management
-- Link management
-- Device management
-
-### Planned
-
-- Monitoring engine
-- Incident management
-- SLA tracking
-- AI agents and automation workflows
+Violation = critical security issue
 
 ---
 
-## Getting Started
+### 2. Predictable Code
 
-### Requirements
+- No magic logic
+- No hidden behavior
+- No implicit rules
 
-- Python 3.11+
-- PostgreSQL
-- Virtual environment with venv
-
-### Installation
-
-Clone the repository:
-
-`git clone https://github.com/your-user/open-noc-ai.git`
-
-Enter the backend folder:
-
-`cd open-noc-ai/backend`
-
-Create and activate the virtual environment:
-
-`python3 -m venv .venv`
-
-`source .venv/bin/activate`
-
-Install dependencies:
-
-`pip install -r requirements.txt`
-
-### Run the API
-
-`uvicorn app.main:app --reload`
-
-### Access API Documentation
-
-`http://127.0.0.1:8000/docs`
+All behavior must be explicit and readable
 
 ---
 
-## Current Modules
+### 3. Consistent Pattern
 
-### Inventory
+Every entity MUST follow:
 
-| Entity | Status |
-|---|---|
-| Tenant | Implemented |
-| User | Implemented |
-| Customer | Complete |
-| Site | API implemented |
-| Carrier | In progress |
-| Link | Planned |
-| Device | Planned |
+model → schema → crud → endpoint → router
+
+Do NOT skip layers.
 
 ---
 
-## Roadmap
+### 4. Soft Delete
 
-### Phase 1 — Inventory API
-
-- Complete all inventory entities
-- Validate full data flow
-
-### Phase 2 — Monitoring
-
-- Metrics ingestion
-- Event processing pipeline
-
-### Phase 3 — Incidents
-
-- Incident lifecycle management
-- Correlation engine
-
-### Phase 4 — AI & Automation
-
-- LLM integration
-- Autonomous agents
-- Intelligent runbooks
+- Use is_active instead of hard delete
+- Never physically delete records
 
 ---
 
-## License
+### 5. Auditability
 
-This project is licensed under the MIT License.
+- Every operation must be traceable
+- Avoid logic that cannot be logged or audited
+
+---
+
+## 🧱 BACKEND ARCHITECTURE
+
+Project structure:
+
+backend/app/
+
+- api/
+- core/
+- db/
+- models/
+- schemas/
+- services/
+
+### Responsibilities
+
+- models → database structure
+- schemas → validation & serialization
+- crud → database interaction
+- endpoints → API layer
+
+---
+
+## ⚙️ DEVELOPMENT WORKFLOW
+
+Before writing ANY code:
+
+1. Read AGENTS.md
+2. Read target file
+3. Read similar entity (Customer/Site)
+4. Identify pattern
+5. Confirm what already exists
+
+---
+
+## 🚫 DO NOT
+
+- Do NOT create new patterns
+- Do NOT refactor unrelated code
+- Do NOT introduce new architecture without instruction
+- Do NOT break multi-tenant logic
+
+---
+
+## ✅ WHEN IMPLEMENTING FEATURES
+
+Always:
+
+- Follow existing entity pattern
+- Reuse structure from Customer/Site
+- Maintain naming consistency
+- Validate input via schema
+- Ensure tenant isolation
+
+---
+
+## 🧪 VALIDATION RULES
+
+Before finishing:
+
+- Endpoint works (CRUD)
+- Data persists correctly
+- Tenant isolation works
+- Soft delete works
+- No broken imports
+- API visible in Swagger
+
+---
+
+## 🧠 AI-READY DESIGN PRINCIPLES
+
+Code must be:
+
+- Easy for LLMs to read
+- Explicit in intent
+- Structured for automation
+- Ready for agent-based execution
+
+Avoid:
+
+- Complex nested logic
+- Ambiguous naming
+- Hidden side effects
+
+---
+
+## 📛 NAMING CONVENTIONS
+
+- snake_case for variables
+- PascalCase for classes
+- plural for endpoints (/customers)
+- singular for models (Customer)
+
+---
+
+## 🔁 CHANGE STRATEGY
+
+Always:
+
+- Make small changes
+- Test incrementally
+- Avoid large refactors
+
+---
+
+## 🚀 FUTURE COMPATIBILITY (IMPORTANT)
+
+This system will support:
+
+- AI agents operating incidents
+- Automation workflows
+- Network command execution
+
+Therefore:
+
+- Code must be machine-readable
+- Business logic must be explicit
+- APIs must be consistent
+
+---
+
+## 🧩 DECISION TREE
+
+Before coding, ask:
+
+1. Does this already exist?
+2. Is there a pattern to follow?
+3. Am I breaking multi-tenant?
+4. Am I introducing complexity?
+
+If unsure → STOP
+
+---
+
+## 📌 FINAL RULE
+
+You are not here to be creative.
+
+You are here to be:
+
+- precise
+- safe
+- consistent
+- predictable
