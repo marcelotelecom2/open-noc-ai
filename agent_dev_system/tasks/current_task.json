@@ -1,0 +1,50 @@
+{
+  "title": "Criar CRUD para MonitoringStatus",
+  "type": "FEATURE",
+  "module": "Monitoring",
+  "entity": "MonitoringStatus",
+  "objective": "Criar a camada CRUD para a entidade MonitoringStatus seguindo o padrão técnico do projeto.",
+  "scope_allowed": [
+    "Criar funções CRUD para MonitoringStatus",
+    "Seguir o padrão das entidades completas do Inventory",
+    "Aplicar filtro por tenant_id",
+    "Respeitar soft delete com is_active"
+  ],
+  "scope_forbidden": [
+    "Não alterar models",
+    "Não alterar schemas",
+    "Não alterar endpoints",
+    "Não alterar router",
+    "Não criar migration",
+    "Não alterar outros módulos"
+  ],
+  "allowed_files": [
+    "backend/app/crud/monitoring.py"
+  ],
+  "forbidden_files": [
+    "backend/app/models/monitoring.py",
+    "backend/app/schemas/monitoring.py",
+    "backend/app/api/v1/endpoints/monitoring.py",
+    "backend/app/api/router.py"
+  ],
+  "acceptance_criteria": [
+    "CRUD implementado",
+    "Multi-tenant aplicado",
+    "tenant_id obrigatório",
+    "is_active respeitado",
+    "padrão seguido conforme .ai",
+    "sem acesso direto ao DB nos endpoints"
+  ],
+  "ai_command": ".ai/commands/create-crud.md",
+  "dependencies": [
+    "Model MonitoringStatus existente"
+  ],
+  "risks": [
+    "Criar CRUD fora do padrão",
+    "Alterar arquivos fora do escopo",
+    "Ignorar tenant_id",
+    "Ignorar soft delete"
+  ],
+  "status": "PLANNED",
+  "approved_for_dev": true
+}

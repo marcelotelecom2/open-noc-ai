@@ -1,0 +1,24 @@
+{
+  "title": "",
+  "type": "",
+  "module": "",
+  "entity": "",
+  "objective": "",
+  "scope_allowed": [],
+  "scope_forbidden": [],
+  "allowed_files": [],
+  "forbidden_files": [],
+  "acceptance_criteria": [
+    "CRUD implementado",
+    "Multi-tenant aplicado",
+    "tenant_id obrigatório",
+    "is_active respeitado",
+    "padrão seguido conforme .ai",
+    "sem acesso direto ao DB nos endpoints"
+  ],
+  "ai_command": "",
+  "dependencies": [],
+  "risks": [],
+  "status": "PLANNED",
+  "approved_for_dev": false
+}

@@ -1,0 +1,52 @@
+{
+  "project": {
+    "name": "open-noc-ai",
+    "type": "aiops-noc-platform",
+    "tech_lead_required": true
+  },
+  "paths": {
+    "instruction_root": ".ai",
+    "global_instruction_file": "AGENTS.md",
+    "backend_root": "backend/app",
+    "docs_root": "docs",
+    "outputs_root": "agent-dev-system/outputs"
+  },
+  "instruction_files": {
+    "always_required": [
+      "AGENTS.md",
+      ".ai/README.md",
+      ".ai/rules/architecture.md",
+      ".ai/rules/naming.md",
+      ".ai/rules/security.md"
+    ],
+    "backend_required": [
+      ".ai/rules/api.md",
+      ".ai/rules/database.md",
+      ".ai/rules/multi-tenant.md",
+      ".ai/rules/testing.md"
+    ]
+  },
+  "task_commands": {
+    "create_model": ".ai/commands/create-model.md",
+    "create_schema": ".ai/commands/create-schema.md",
+    "create_crud": ".ai/commands/create-crud.md",
+    "create_endpoint": ".ai/commands/create-endpoint.md",
+    "review_code": ".ai/commands/review-code.md",
+    "validate_module": ".ai/commands/validate-module.md",
+    "close_task": ".ai/commands/close-task.md"
+  },
+  "agent_roles": {
+    "architect": ".ai/agents/architect.md",
+    "backend_engineer": ".ai/agents/backend-engineer.md",
+    "code_reviewer": ".ai/agents/code-reviewer.md",
+    "security_reviewer": ".ai/agents/security-reviewer.md",
+    "documentation_writer": ".ai/agents/documentation-writer.md"
+  },
+  "mvp_rules": [
+    "do_not_execute_production_code",
+    "do_not_skip_tech_lead_gate",
+    "do_not_modify_files_outside_allowed_scope",
+    "do_not_start_open_noc_ai_task_without_context_selection",
+    "generate_codex_prompt_before_any_code_change"
+  ]
+}
