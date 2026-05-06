@@ -9,7 +9,7 @@
     "global_instruction_file": "AGENTS.md",
     "backend_root": "backend/app",
     "docs_root": "docs",
-    "outputs_root": "agent-dev-system/outputs"
+    "outputs_root": "agent_dev_system/outputs"
   },
   "instruction_files": {
     "always_required": [
