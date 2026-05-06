@@ -5,6 +5,7 @@ from agents.architecture_guard import ArchitectureGuard
 from agents.context_selector import ContextSelector
 from agents.local_validation_checklist import LocalValidationChecklist
 from agents.post_codex_validator import run as run_post_codex_validator
+from agents.report_writer import ReportWriter
 from agents.task_validator import run_validation as run_task_validator
 from agents.tech_lead_gate import TechLeadGate
 from tools.prompt_writer import PromptWriter
@@ -15,11 +16,19 @@ TASK_PATH = Path("agent_dev_system/tasks/current_task.json")
 
 class DevelopmentGraph:
     def __init__(self):
-        self.selector = ContextSelector("agent_dev_system/config/project_context.json")
+        self.selector = ContextSelector(
+            "agent_dev_system/config/project_context.json"
+        )
+
         self.guard = ArchitectureGuard()
         self.writer = PromptWriter()
         self.gate = TechLeadGate()
-        self.local_validation_checklist = LocalValidationChecklist()
+
+        self.local_validation_checklist = (
+            LocalValidationChecklist()
+        )
+
+        self.report_writer = ReportWriter()
 
     def run(self, task: str) -> None:
         task_data = self._load_task()
@@ -33,17 +42,29 @@ class DevelopmentGraph:
         print("\n=== CONTEXTO GERADO ===")
         print(context)
 
-        is_valid, issues = self.guard.validate(context=context, task=task_data)
+        is_valid, issues = self.guard.validate(
+            context=context,
+            task=task_data,
+        )
+
+        architecture_result = {
+            "approved": is_valid,
+            "issues": issues,
+        }
 
         if not is_valid:
             print("\n=== ARCHITECTURE GUARD FAILED ===")
+
             for issue in issues:
                 print(f"- {issue}")
+
             return
 
         print("\n=== ARCHITECTURE GUARD PASSED ===")
 
-        if not self.gate.approve("Validar contexto antes de gerar prompt?"):
+        if not self.gate.approve(
+            "Validar contexto antes de gerar prompt?"
+        ):
             print("Processo cancelado pelo Tech Lead.")
             return
 
@@ -52,26 +73,65 @@ class DevelopmentGraph:
         print("\n=== PROMPT GERADO ===")
         print(prompt)
 
-        if not self.gate.approve("Validar prompt antes de salvar?"):
+        if not self.gate.approve(
+            "Validar prompt antes de salvar?"
+        ):
             print("Processo cancelado pelo Tech Lead.")
             return
 
-        with open("agent_dev_system/outputs/codex_prompt.md", "w") as f:
+        with open(
+            "agent_dev_system/outputs/codex_prompt.md",
+            "w",
+        ) as f:
             f.write(prompt)
 
-        print("\nPrompt salvo em agent_dev_system/outputs/codex_prompt.md")
+        print(
+            "\nPrompt salvo em "
+            "agent_dev_system/outputs/codex_prompt.md"
+        )
 
-        if not run_post_codex_validator():
+        post_codex_passed = run_post_codex_validator()
+
+        post_codex_result = {
+            "passed": post_codex_passed,
+            "issues": [],
+        }
+
+        if not post_codex_passed:
             print("\n=== POST-CODEX VALIDATOR FAILED ===")
-            return
 
-        local_validation = self.local_validation_checklist.run()
+        local_validation = (
+            self.local_validation_checklist.run()
+        )
+
+        local_validation_result = {
+            "passed": (
+                local_validation["status"] == "PASSED"
+            ),
+            "issues": local_validation.get(
+                "issues",
+                [],
+            ),
+        }
 
         if local_validation["status"] == "FAILED":
-            print("\n=== LOCAL VALIDATION CHECKLIST FAILED ===")
-            return
+            print(
+                "\n=== LOCAL VALIDATION CHECKLIST FAILED ==="
+            )
 
-        print("\n=== LOCAL VALIDATION CHECKLIST COMPLETED ===")
+        print(
+            "\n=== LOCAL VALIDATION CHECKLIST COMPLETED ==="
+        )
+
+        report_result = self.report_writer.execute(
+            task_data=task_data,
+            architecture_result=architecture_result,
+            post_codex_result=post_codex_result,
+            local_validation_result=local_validation_result,
+        )
+
+        print("\n=== FINAL REPORT GENERATED ===")
+        print(report_result)
 
     def _load_task(self) -> dict:
         with open(TASK_PATH, "r") as f:
