@@ -1,49 +1,52 @@
 {
-  "title": "Criar CRUD para MonitoringStatus",
-  "type": "FEATURE",
-  "module": "Monitoring",
-  "entity": "MonitoringStatus",
-  "objective": "Criar a camada CRUD para a entidade MonitoringStatus seguindo o padrão técnico do projeto.",
+  "title": "Validar CRUD de User",
+  "type": "VALIDATION",
+  "module": "Core",
+  "entity": "User",
+  "objective": "Validar se o CRUD de User está aderente ao padrão técnico, multi-tenant, separação de responsabilidades e regras de governança do projeto.",
   "scope_allowed": [
-    "Criar funções CRUD para MonitoringStatus",
-    "Seguir o padrão das entidades completas do Inventory",
-    "Aplicar filtro por tenant_id",
-    "Respeitar soft delete com is_active"
+    "Validar CRUD de User",
+    "Verificar aderência ao padrão técnico do projeto",
+    "Verificar uso correto de tenant_id quando aplicável",
+    "Verificar soft delete com is_active quando aplicável",
+    "Verificar separação entre model, schema, crud e endpoint"
   ],
   "scope_forbidden": [
-    "Não alterar models",
-    "Não alterar schemas",
-    "Não alterar endpoints",
-    "Não alterar router",
-    "Não criar migration",
+    "Não implementar novas features",
+    "Não alterar models sem aprovação",
+    "Não alterar schemas sem aprovação",
+    "Não alterar endpoints sem aprovação",
+    "Não criar migrations",
     "Não alterar outros módulos"
   ],
   "allowed_files": [
-    "backend/app/crud/monitoring.py"
+    "backend/app/crud/user.py"
   ],
   "forbidden_files": [
-    "backend/app/models/monitoring.py",
-    "backend/app/schemas/monitoring.py",
-    "backend/app/api/v1/endpoints/monitoring.py",
+    "backend/app/models/user.py",
+    "backend/app/schemas/user.py",
+    "backend/app/api/v1/endpoints/users.py",
     "backend/app/api/router.py"
   ],
   "acceptance_criteria": [
-    "CRUD implementado",
-    "Multi-tenant aplicado",
-    "tenant_id obrigatório",
-    "is_active respeitado",
-    "padrão seguido conforme .ai",
-    "sem acesso direto ao DB nos endpoints"
+    "CRUD de User validado",
+    "Multi-tenant validado",
+    "tenant_id avaliado quando aplicável",
+    "is_active avaliado quando aplicável",
+    "padrão técnico validado",
+    "nenhum arquivo fora do escopo alterado"
   ],
-  "ai_command": ".ai/commands/create-crud.md",
+  "ai_command": ".ai/commands/validate-crud.md",
   "dependencies": [
-    "Model MonitoringStatus existente"
+    "Model User existente",
+    "Schema User existente",
+    "CRUD User existente"
   ],
   "risks": [
-    "Criar CRUD fora do padrão",
-    "Alterar arquivos fora do escopo",
-    "Ignorar tenant_id",
-    "Ignorar soft delete"
+    "Validar arquivos errados",
+    "Alterar código sem necessidade",
+    "Ignorar regras multi-tenant",
+    "Ignorar separação de responsabilidades"
   ],
   "status": "PLANNED",
   "approved_for_dev": true

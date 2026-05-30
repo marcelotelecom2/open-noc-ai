@@ -1,0 +1,18 @@
+name: Governance
+
+on:
+  workflow_dispatch:
+
+jobs:
+  repository-governance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required governance files
+        run: |
+          test -f AGENTS.md
+          test -d .ai/rules
+          test -f docs/development.md
