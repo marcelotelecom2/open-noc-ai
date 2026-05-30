@@ -38,6 +38,9 @@ from app.models.policy_rule import PolicyRule  # noqa: F401
 from app.models.change_request import ChangeRequest  # noqa: F401
 from app.models.automation_run import AutomationRun  # noqa: F401
 from app.models.runbook import Runbook  # noqa: F401
+from app.models.syslog_message import SyslogMessage  # noqa: F401
+from app.models.snmp_trap import SNMPTrap  # noqa: F401
+from app.models.flow_record import FlowRecord  # noqa: F401
 
 config = context.config
 

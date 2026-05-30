@@ -34,7 +34,9 @@ Data ingestion → Correlation → Context enrichment → AI reasoning → Decis
 ### Description
 
 * **Data ingestion**
-  Metrics, logs, events and external data sources
+  Network-device telemetry from syslog, SNMP traps, IP flow and active checks.
+  The current architecture does not require agents installed on operating
+  systems.
 
 * **Correlation**
   Detection of patterns, incidents and anomalies

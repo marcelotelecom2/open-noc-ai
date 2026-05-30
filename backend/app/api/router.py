@@ -24,6 +24,9 @@ from app.api.v1.endpoints import (
     change_requests,
     automation_runs,
     runbooks,
+    syslog_messages,
+    snmp_traps,
+    flow_records,
 )
 
 
@@ -64,3 +67,6 @@ api_router.include_router(policy_rules.router, prefix="/policy-rules", tags=["po
 api_router.include_router(change_requests.router, prefix="/change-requests", tags=["change-requests"])
 api_router.include_router(automation_runs.router, prefix="/automation-runs", tags=["automation-runs"])
 api_router.include_router(runbooks.router, prefix="/runbooks", tags=["runbooks"])
+api_router.include_router(syslog_messages.router, prefix="/syslog-messages", tags=["syslog-messages"])
+api_router.include_router(snmp_traps.router, prefix="/snmp-traps", tags=["snmp-traps"])
+api_router.include_router(flow_records.router, prefix="/flow-records", tags=["flow-records"])

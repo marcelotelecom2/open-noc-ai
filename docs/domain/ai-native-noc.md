@@ -16,7 +16,9 @@ Inventory -> Collection -> Metrics -> Monitoring -> Alerting -> Incidents
 ## Domains
 
 - Inventory: customers, sites, links, devices and interfaces.
-- Collection: monitoring checks and check results.
+- Collection: network-device telemetry only. The current scope receives data
+  from routers, switches, firewalls, wireless controllers and other network
+  appliances through syslog, SNMP traps, IP flow and active checks.
 - Metrics: metric samples owned by open-noc-ai.
 - Monitoring: current status and event history.
 - Alerting: tenant-scoped rules that turn metrics and events into signals.
@@ -35,3 +37,21 @@ Inventory -> Collection -> Metrics -> Monitoring -> Alerting -> Incidents
 - Agents create actions, evidence, AI runs and audit events.
 - Sensitive execution is represented as a change or automation run.
 - Every autonomous or assisted action must be explainable after the fact.
+
+## Network Device Scope
+
+The platform does not install agents on operating systems in the current scope.
+
+Supported collection boundaries:
+
+- Syslog from network equipment, normalized around RFC 5424 fields while keeping
+  raw messages for vendor-specific parsing.
+- SNMP traps from network equipment.
+- IP flow records from exporters such as NetFlow, IPFIX and sFlow.
+- Active monitoring checks executed by open-noc-ai against network resources.
+
+Out of scope for now:
+
+- Host agents installed on Linux, Windows or application servers.
+- Endpoint telemetry that depends on software installed inside the operating
+  system.
