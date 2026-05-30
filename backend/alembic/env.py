@@ -29,6 +29,15 @@ from app.models.ai_provider_config import AIProviderConfig  # noqa: F401
 from app.models.interface import Interface  # noqa: F401
 from app.models.audit_event import AuditEvent  # noqa: F401
 from app.models.agent_action import AgentAction  # noqa: F401
+from app.models.monitoring_check import MonitoringCheck  # noqa: F401
+from app.models.check_result import CheckResult  # noqa: F401
+from app.models.metric_sample import MetricSample  # noqa: F401
+from app.models.alert_rule import AlertRule  # noqa: F401
+from app.models.ai_run import AIRun  # noqa: F401
+from app.models.policy_rule import PolicyRule  # noqa: F401
+from app.models.change_request import ChangeRequest  # noqa: F401
+from app.models.automation_run import AutomationRun  # noqa: F401
+from app.models.runbook import Runbook  # noqa: F401
 
 config = context.config
 

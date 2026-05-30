@@ -15,6 +15,15 @@ from app.api.v1.endpoints import (
     interfaces,
     audit_events,
     agent_actions,
+    monitoring_checks,
+    check_results,
+    metric_samples,
+    alert_rules,
+    ai_runs,
+    policy_rules,
+    change_requests,
+    automation_runs,
+    runbooks,
 )
 
 
@@ -46,3 +55,12 @@ api_router.include_router(
 )
 api_router.include_router(audit_events.router, prefix="/audit-events", tags=["audit-events"])
 api_router.include_router(agent_actions.router, prefix="/agent-actions", tags=["agent-actions"])
+api_router.include_router(monitoring_checks.router, prefix="/monitoring-checks", tags=["monitoring-checks"])
+api_router.include_router(check_results.router, prefix="/check-results", tags=["check-results"])
+api_router.include_router(metric_samples.router, prefix="/metric-samples", tags=["metric-samples"])
+api_router.include_router(alert_rules.router, prefix="/alert-rules", tags=["alert-rules"])
+api_router.include_router(ai_runs.router, prefix="/ai-runs", tags=["ai-runs"])
+api_router.include_router(policy_rules.router, prefix="/policy-rules", tags=["policy-rules"])
+api_router.include_router(change_requests.router, prefix="/change-requests", tags=["change-requests"])
+api_router.include_router(automation_runs.router, prefix="/automation-runs", tags=["automation-runs"])
+api_router.include_router(runbooks.router, prefix="/runbooks", tags=["runbooks"])
