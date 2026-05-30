@@ -1,48 +1,51 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-from uuid import uuid4
+from uuid import UUID
 
-from app.api.deps import get_db_session
-from app.models.user import User
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db
+from app.crud.user import (
+    create_user,
+    get_users,
+    verify_user_password as verify_user_password_crud,
+)
 from app.schemas.user import UserResponse, UserCreate
-from app.core.security import get_password_hash, verify_password
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[UserResponse])
-def list_users(db: Session = Depends(get_db_session)):
-    return db.query(User).all()
+def list_users(
+    tenant_id: UUID,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+):
+    return get_users(db=db, tenant_id=tenant_id, skip=skip, limit=limit)
 
 
 @router.post("/", response_model=UserResponse)
-def create_user(payload: UserCreate, db: Session = Depends(get_db_session)):
-    user = User(
-        id=uuid4(),
-        tenant_id=payload.tenant_id,
-        email=payload.email,
-        full_name=payload.full_name,
-        hashed_password=get_password_hash(payload.password),
-        is_active=payload.is_active,
-    )
-
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+def create(payload: UserCreate, db: Session = Depends(get_db)):
+    try:
+        return create_user(db=db, user_in=payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.post("/verify")
 def verify_user_password(
+    tenant_id: UUID,
     email: str,
     password: str,
-    db: Session = Depends(get_db_session),
+    db: Session = Depends(get_db),
 ):
-    user = db.query(User).filter(User.email == email).first()
-
-    if not user:
-        return {"error": "User not found"}
-
-    valid = verify_password(password, user.hashed_password)
+    valid = verify_user_password_crud(
+        db=db,
+        tenant_id=tenant_id,
+        email=email,
+        password=password,
+    )
+    if valid is None:
+        raise HTTPException(status_code=404, detail="User not found")
 
     return {"valid": valid}

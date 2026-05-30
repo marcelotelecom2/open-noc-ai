@@ -1,30 +1,22 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from uuid import uuid4
 
-from app.api.deps import get_db_session
-from app.models.tenant import Tenant
+from app.api.deps import get_db
+from app.crud.tenant import create_tenant, get_tenants
 from app.schemas.tenant import TenantResponse, TenantCreate
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[TenantResponse])
-def list_tenants(db: Session = Depends(get_db_session)):
-    return db.query(Tenant).all()
+def list_tenants(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
+):
+    return get_tenants(db=db, skip=skip, limit=limit)
 
 
 @router.post("/", response_model=TenantResponse)
-def create_tenant(payload: TenantCreate, db: Session = Depends(get_db_session)):
-    tenant = Tenant(
-        id=uuid4(),
-        name=payload.name,
-        slug=payload.slug,
-        status=payload.status,
-        plan=payload.plan,
-        is_active=payload.is_active,
-    )
-    db.add(tenant)
-    db.commit()
-    db.refresh(tenant)
-    return tenant
+def create(payload: TenantCreate, db: Session = Depends(get_db)):
+    return create_tenant(db=db, tenant_in=payload)

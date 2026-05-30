@@ -1,17 +1,24 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, String, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, String, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
 
 
-class MonitoringEvent(Base):
-    """Representa um evento histórico de monitoramento de um recurso do tenant."""
+class AIProviderConfig(Base):
+    """Representa a configuração de um provedor público de IA por tenant."""
 
-    __tablename__ = "monitoring_events"
+    __tablename__ = "ai_provider_configs"
+    __table_args__ = (
+        UniqueConstraint(
+            "tenant_id",
+            "provider",
+            name="uq_ai_provider_config_tenant_provider",
+        ),
+    )
 
     id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True),
@@ -26,56 +33,50 @@ class MonitoringEvent(Base):
         index=True,
     )
 
-    resource_type: Mapped[str] = mapped_column(
+    provider: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
+        default="openai",
         index=True,
     )
 
-    resource_id: Mapped[UUID] = mapped_column(
-        PGUUID(as_uuid=True),
-        nullable=False,
-        index=True,
-    )
-
-    event_type: Mapped[str] = mapped_column(
+    api_mode: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
-        index=True,
+        default="responses",
     )
 
-    status: Mapped[str | None] = mapped_column(
-        String(50),
-        nullable=True,
-        index=True,
-    )
-
-    severity: Mapped[str] = mapped_column(
-        String(50),
+    base_url: Mapped[str] = mapped_column(
+        String(255),
         nullable=False,
-        default="info",
-        index=True,
+        default="https://api.openai.com/v1",
     )
 
-    metric_name: Mapped[str | None] = mapped_column(
+    default_model: Mapped[str] = mapped_column(
+        String(100),
+        nullable=False,
+        default="gpt-5.2",
+    )
+
+    api_key_secret_name: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False,
+    )
+
+    organization_id: Mapped[str | None] = mapped_column(
         String(100),
         nullable=True,
-        index=True,
     )
 
-    metric_value: Mapped[float | None] = mapped_column(
-        Float,
+    project_id: Mapped[str | None] = mapped_column(
+        String(100),
         nullable=True,
     )
 
-    message: Mapped[str | None] = mapped_column(
-        String(500),
-        nullable=True,
-    )
-
-    occurred_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True),
+    status: Mapped[str] = mapped_column(
+        String(50),
         nullable=False,
+        default="active",
         index=True,
     )
 
@@ -87,13 +88,13 @@ class MonitoringEvent(Base):
 
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=func.now(),
         nullable=False,
+        server_default=func.now(),
     )
 
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
+        nullable=False,
         server_default=func.now(),
         onupdate=func.now(),
-        nullable=False,
     )

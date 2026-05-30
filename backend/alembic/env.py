@@ -21,6 +21,11 @@ from app.models.site import Site  # noqa: F401
 from app.models.carrier import Carrier  # noqa: F401
 from app.models.link import Link  # noqa: F401
 from app.models.device import Device  # noqa: F401
+from app.models.monitoring_status import MonitoringStatus  # noqa: F401
+from app.models.monitoring_event import MonitoringEvent  # noqa: F401
+from app.models.incident import Incident  # noqa: F401
+from app.models.incident_history import IncidentHistory  # noqa: F401
+from app.models.ai_provider_config import AIProviderConfig  # noqa: F401
 
 config = context.config
 
@@ -69,4 +74,3 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
-
