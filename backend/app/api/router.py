@@ -12,6 +12,9 @@ from app.api.v1.endpoints import (
     monitoring_events,
     incidents,
     ai_provider_configs,
+    interfaces,
+    audit_events,
+    agent_actions,
 )
 
 
@@ -24,6 +27,7 @@ api_router.include_router(sites.router, prefix="/sites", tags=["sites"])
 api_router.include_router(carriers.router, prefix="/carriers", tags=["carriers"])
 api_router.include_router(links.router, prefix="/links", tags=["links"])
 api_router.include_router(devices.router, prefix="/devices", tags=["devices"])
+api_router.include_router(interfaces.router, prefix="/interfaces", tags=["interfaces"])
 api_router.include_router(
     monitoring_statuses.router,
     prefix="/monitoring-statuses",
@@ -40,3 +44,5 @@ api_router.include_router(
     prefix="/ai-provider-configs",
     tags=["ai-provider-configs"],
 )
+api_router.include_router(audit_events.router, prefix="/audit-events", tags=["audit-events"])
+api_router.include_router(agent_actions.router, prefix="/agent-actions", tags=["agent-actions"])

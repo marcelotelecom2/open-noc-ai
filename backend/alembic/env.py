@@ -26,6 +26,9 @@ from app.models.monitoring_event import MonitoringEvent  # noqa: F401
 from app.models.incident import Incident  # noqa: F401
 from app.models.incident_history import IncidentHistory  # noqa: F401
 from app.models.ai_provider_config import AIProviderConfig  # noqa: F401
+from app.models.interface import Interface  # noqa: F401
+from app.models.audit_event import AuditEvent  # noqa: F401
+from app.models.agent_action import AgentAction  # noqa: F401
 
 config = context.config
 

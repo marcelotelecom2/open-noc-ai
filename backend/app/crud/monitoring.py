@@ -3,13 +3,14 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 
 from app.models.device import Device
+from app.models.interface import Interface
 from app.models.link import Link
 from app.models.monitoring_event import MonitoringEvent
 from app.models.monitoring_status import MonitoringStatus
 from app.schemas.monitoring_event import MonitoringEventCreate
 from app.schemas.monitoring_status import MonitoringStatusCreate, MonitoringStatusUpdate
 
-MONITORED_RESOURCE_TYPES = {"link", "device"}
+MONITORED_RESOURCE_TYPES = {"link", "device", "interface"}
 
 
 def _validate_monitored_resource(
@@ -21,7 +22,12 @@ def _validate_monitored_resource(
     if resource_type not in MONITORED_RESOURCE_TYPES:
         raise ValueError("Unsupported monitored resource type")
 
-    model = Link if resource_type == "link" else Device
+    resource_models = {
+        "link": Link,
+        "device": Device,
+        "interface": Interface,
+    }
+    model = resource_models[resource_type]
     resource = (
         db.query(model)
         .filter(model.id == resource_id)
